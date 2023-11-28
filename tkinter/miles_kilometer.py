@@ -3,7 +3,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 
 # window
-window = ttk.Window(themename='darkly')
+window = ttk.Window(themename='journal23')
 window.title('Demo')
 window.geometry("300x150")
 
