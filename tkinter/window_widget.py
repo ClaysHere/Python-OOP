@@ -4,9 +4,6 @@ from tkinter import ttk
 def press_button():
     print("A button was pressed")
     
-def say_hello():
-    print("hello")
-
 # create a window
 window = tk.Tk()
 window.title("Window and Widgets")
@@ -41,7 +38,7 @@ button.pack()
 # the label should say 'my label' and be between the entry widget and button
 
 # exercise button
-exercise_button = ttk.Button(master=window,text="Say hello!",command=say_hello)
+exercise_button = ttk.Button(master=window,text="Say hello!",command=lambda: print("hello"))
 exercise_button.pack()
 
 # run
