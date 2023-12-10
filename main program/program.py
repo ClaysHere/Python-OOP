@@ -108,27 +108,66 @@ class listBook:
     
     def cekJumlahHalaman(self, page):
         try:
-           if(type(page) != int):
-               raise ValueError('Jumlah halaman harus dalam bentuk angka.')
+            page = int(page)
         except ValueError as e:
-            print(str(e))
+            print('Jumlah halaman harus dalam bentuk angka.')
             return False
         return True
     
     def cekHarga(self, price):
         try:
-           if(type(price) != int):
-               raise ValueError('Harga buku harus dalam bentuk angka.')
+            price = int(price)
         except ValueError as e:
-            print(str(e))
+            print('Harga buku harus dalam bentuk angka.')
             return False
         return True
 
-    def searchBook(self):
-        pass
+    def searchBook(self, search_term):
+        found_books = []
+
+        for book in self.listBookPrinted:
+            if search_term.lower() in book.title.lower():
+                found_books.append(book)
+
+        for ebook in self.listEbook:
+            if search_term.lower() in ebook.title.lower():
+                found_books.append(ebook)
+
+        if not found_books:
+            print(f'No books found with the search term: {search_term}')
+        else:
+            print('Found books:')
+            for found_book in found_books:
+                found_book.cetakInfo()
 
     def buyBook(self):
-        pass
+        book_type = input('Enter the type of the book you want to buy (p/e): ')
+        book_id = input('Enter the ID of the book you want to buy: ')
+
+        if book_type == "p":
+            for book in self.listBookPrinted:
+                if book.id == book_id:
+                    if book.amount > 0:
+                        print(f'You have successfully purchased "{book.title}".')
+                        book.amount -= 1
+                        return
+                    else:
+                        print(f'Sorry, "{book.title}" is out of stock.')
+                        return
+
+        elif book_type == "e":
+            license_key = input('Enter the license key: ')
+            for ebook in self.listEbook:
+                if ebook.id == book_id:
+                    if ebook.licenseKey == license_key:
+                        print(f'You have successfully purchased "{ebook.title}".')
+                        ebook.licenseKey = 'Used'
+                        return
+                    else:
+                        print('Invalid license key. Purchase failed.')
+                        return
+
+        print(f'Book with ID {book_id} not found in the catalog.')
 
     def cekStock(self, id):
         iter_item = iter(self.listBookPrinted)
@@ -183,7 +222,8 @@ def main():
                     print('Ebook')
                     bookstore.cetakEBook()
                 if(pil == 2):
-                    bookstore.searchBook()
+                    search_term = input('Enter search term: ')
+                    bookstore.searchBook(search_term)
                 if(pil == 3):
                     bookstore.buyBook()
                 if(pil == 4):
@@ -204,10 +244,10 @@ def main():
                         id = input('ID Buku : ')
                         title = input('Judul Buku : ')
                         author = input('Penulis : ')
-                        page = int(input('Jumlah Halaman : '))
+                        page = input('Jumlah Halaman : ')
                         edition = input('Edisi : ')
                         genre = input('Genre : ')
-                        price = int(input('Harga : '))
+                        price = input('Harga : ')
                         amount = int(input('Jumlah buku : '))
                         cover = input('Cover(Hard/Soft) : ')
                         isbn = input('ISBN : ')
@@ -218,18 +258,19 @@ def main():
                         id = input('ID Buku : ')
                         title = input('Judul Buku : ')
                         author = input('Penulis : ')
-                        page = int(input('Jumlah Halaman : '))
+                        page = input('Jumlah Halaman : ')
                         edition = input('Edisi : ')
                         genre = input('Genre : ')
-                        price = int(input('Harga : '))
+                        price = input('Harga : ')
                         format = input('File Format : ')
                         size = input('File size : ')
                         licenseKey = input('License Key : ')
-                        book2 = printedBook(id, title, author, page, edition, genre, price, format, size, licenseKey)
+                        book2 = Ebook(id, title, author, page, edition, genre, price, format, size, licenseKey)
                         bookstore.inputEBook(book2)
 
                 elif(pil == 2):
-                    pass
+                    search_term = input('Enter search term: ')
+                    bookstore.searchBook(search_term)
 
                 elif(pil == 3):
                     cekStock = input('Masukkan ID buku yang ingin dicek stocknya : ')
@@ -241,6 +282,10 @@ def main():
         elif(opsi == 3):
             print('Thank you for visiting 😊')
             break
+
+        else:
+            print('No option in choices')
+            continue
 
 
 main()
