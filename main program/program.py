@@ -273,7 +273,7 @@ def main():
                     bookstore.searchBook(search_term)
 
                 elif(pil == 3):
-                    cekStock = input('Masukkan ID buku yang ingin dicek stocknya : ')
+                    cekStock = input('Masukkan ID buku cetak yang ingin dicek stocknya : ')
                     bookstore.cekStock(cekStock)
 
                 elif(pil == 4):
