@@ -13,6 +13,16 @@ class BookStore(metaclass=abc.ABCMeta):
     def cetakInfo(self):
         pass
 
+class Observer(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def update(self, book):
+        pass
+
+class StockObserver(Observer):
+    def update(self, book):
+        if book.amount < 5:
+            print(f'Stock of book "{book.title}" is below 5. Notify the employee!')
+
 class attributeBook:
     def __init__(self, author, page, edition, genre, price):
         self.author = author
@@ -73,12 +83,21 @@ class listBook:
     def __init__(self):
         self.listBookPrinted = []
         self.listEbook = []
+        self.observers = []
+
+    def add_observer(self, observer):
+        self.observers.append(observer)
+
+    def notify_observers(self, book):
+        for observer in self.observers:
+            observer.update(book)
 
     def inputBookPrinted(self, book):
         try:
             if(self.cekKode(book.id) and self.cekJumlahHalaman(book.page) and self.cekHarga(book.price)):
                 self.listBookPrinted.append(book)
                 print(f"Book with ID {book.id} successfully added to the catalog.")
+                self.notify_observers(book)
             
         except ValueError as e:
             print(f"Error: {e}")
@@ -88,6 +107,7 @@ class listBook:
             if(self.cekEbook(book.id) and self.cekJumlahHalaman(book.page) and self.cekHarga(book.price)):
                 self.listEbook.append(book)
                 print(f"Book with ID {book.id} successfully added to the catalog.")
+                self.notify_observers(book)
             
         except ValueError as e:
             print(f"Error: {e}")
@@ -202,6 +222,8 @@ class listBook:
 
 def main():
     bookstore = listBook()
+    stock_observer = StockObserver()
+    bookstore.add_observer(stock_observer)
     while True : 
         print('Selamat Data di Conquerors Book Store')
         print('Siapakah Anda?')
@@ -273,7 +295,7 @@ def main():
                     bookstore.searchBook(search_term)
 
                 elif(pil == 3):
-                    cekStock = input('Masukkan ID buku cetak yang ingin dicek stocknya : ')
+                    cekStock = input('Masukkan ID buku yang ingin dicek stocknya : ')
                     bookstore.cekStock(cekStock)
 
                 elif(pil == 4):
